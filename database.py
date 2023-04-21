@@ -1,4 +1,5 @@
 import sqlite3
+import typing as t 
 
 
 class DatabaseManager:
@@ -27,5 +28,23 @@ class DatabaseManager:
                 {statement_final}
                 );
             """
-        print(query)
         self._execute(query)
+
+    def drop_table(self, table_name):
+        """Take a table name and delete it"""
+        query = f'DROP TABLE IF EXISTS {table_name};'
+        self._execute(query)
+    
+    def insert_data(self, table_name: str, data: t.Dict[str, str]):
+        """Takes a table name and INSERT the information from the dictionary where the key is 
+        the columns and the value is the value 
+        """
+        columns_name = ", ".join(data.keys())
+        placeholders = ", ".join(["?" * len(data.keys())])
+        columns_values = tuple(data.values())
+        query = f"""
+            INSERT INTO
+                {table_name} ({columns_name}) VALUES(
+                    {placeholders}
+                );
+                """
