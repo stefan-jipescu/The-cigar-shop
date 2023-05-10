@@ -1,6 +1,6 @@
 import sqlite3
 import typing as t 
-
+from textwrap import dedent
 
 class DatabaseManager:
     def __init__(self, database_filename: str):
@@ -47,15 +47,14 @@ class DatabaseManager:
         columns_name = ", ".join(data.keys())
         placeholders = ", ".join(["?"] * len(data.keys()))
         columns_values = tuple(data.values())
-        query = f"""
+        query = dedent(f"""
             INSERT INTO
                 {table_name} (
                     {columns_name}
                 ) VALUES (
                     {placeholders}
                 );
-        """
-        print(query)
+        """)
         self._execute(query, columns_values)
     
     def delete(self, table_name: str, criteria: t.Dict[str, str]):

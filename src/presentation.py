@@ -35,3 +35,17 @@ def get_option_choice(options: t.Dict[str, Option]) -> Option:
 def clear_screen():
     clear_command = 'cls' if os.name == 'nt' else 'clear'
     os.system(clear_command)
+
+def get_user_input(label:str, required: bool = True) -> t.Optional[str]:
+    value = input(f'{label}: ') or None
+    while required and not value:
+        value = input(f'{label}: ') or None
+    return value
+
+def get_new_item_data() -> t.Dict[str,str]:
+    result = {
+        'title': get_user_input('Title'),
+        'url': get_user_input('URL'),
+        'notes': get_user_input('Notes', None)
+    }
+    return result
