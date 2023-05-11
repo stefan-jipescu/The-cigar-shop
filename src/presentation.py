@@ -49,3 +49,7 @@ def get_new_item_data() -> t.Dict[str,str]:
         'notes': get_user_input('Notes', None)
     }
     return result
+
+def get_item_id() -> int:
+    result = int(get_user_input("Enter a item ID"))
+    return result

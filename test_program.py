@@ -7,7 +7,7 @@ def loop():
         "A":p.Option(
             name="Add an item",
             command=c.AddItemCommand(),
-            prep_cal= p.get_new_item_data,
+            prep_cal= p.get_new_item_data
         ),
         "B": p.Option(
             name= "List items by date",
@@ -20,7 +20,7 @@ def loop():
         'D':p.Option(
             name="Delete an item",
             command=c.DeleteItemCommand(),
-            #prep_cal= p.get_item_id()
+            prep_cal= p.get_item_id
         ),
         'Q':p.Option(
             name="Quit",
