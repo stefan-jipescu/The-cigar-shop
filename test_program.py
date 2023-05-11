@@ -14,8 +14,8 @@ def loop():
             command=c.ListAllItemsCommand()
         ),
         "T":p.Option(
-        name="List items by name",
-        command=c.ListAllItemsCommand(order_by= 'title')
+            name="List items by name",
+            command=c.ListAllItemsCommand(order_by= 'title')
         ),
         'D':p.Option(
             name="Delete an item",
@@ -32,6 +32,8 @@ def loop():
     chosen_option = p.get_option_choice(options)
     p.clear_screen()
     chosen_option.choose()
+
+    _ = input("Press ENTER to return to menu")
 if __name__ =="__main__": 
     c.Create_new_table().execute()
     while True:

@@ -11,7 +11,11 @@ class Option():
     def choose(self):
         data = self.prep_cal() if self.prep_cal else None
         result = self.command.execute(data) if data else self.command.execute()
-        print(result)
+        if isinstance(result, list):
+            for line in result:
+                print(line)
+        else:
+            print(result)
 
     def __str__(self):
         return self.name
