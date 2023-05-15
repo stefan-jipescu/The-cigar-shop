@@ -1,15 +1,21 @@
 import typing as t
 from src.commands import Command
 import os
-
+from src.database import DatabaseManager
 class Option():
-    def __init__(self, name:str, command: Command, prep_cal: t.Optional[t.Callable] = None):
+    def __init__(self, name:str, command: Command, prep_cal: t.Optional[t.Callable] = None, val_prep_cal = None):
         self.name = name
         self.command = command
         self.prep_cal = prep_cal
-
+        self.val_prep_cal = val_prep_cal
     def choose(self):
-        data = self.prep_cal() if self.prep_cal else None
+        if self.val_prep_cal:
+            data = self.prep_cal(self.val_prep_cal)
+        elif self.prep_cal:
+            #data = self.prep_cal() if self.prep_cal else None
+            data = self.prep_cal()
+        else:
+            data = None
         result = self.command.execute(data) if data else self.command.execute()
         if isinstance(result, list):
             for line in result:
@@ -47,13 +53,60 @@ def get_user_input(label:str, required: bool = True) -> t.Optional[str]:
     return value
 
 def get_new_item_data() -> t.Dict[str,str]:
-    result = {
-        'title': get_user_input('Title'),
-        'url': get_user_input('URL'),
-        'notes': get_user_input('Notes', None)
+    data_table_1 = {
+        'stock': float(get_user_input('Stock')),
+        'price': float(get_user_input('Price')),
+        'note': get_user_input('Note', None)
     }
-    return result
+
+    data_table_2 = {
+        'product_id': int(get_last_item_inserted()),
+        'name': get_user_input('Name'),
+        'ring': float(get_user_input('Ring size')),
+        'length_': int(get_user_input('Length')),
+        'origin': get_user_input('Origin country'),
+        'other': get_user_input('Others details', None)
+    }
+    data_list = [data_table_1, data_table_2]
+    return data_list
+
+def get_last_item_inserted() -> int:
+    db = DatabaseManager('cigar_db.db')
+    cursor = db.select(
+        table_name= 'items', 
+        columns=['max(id)'])
+    last_insert_id = ((cursor.fetchall())[0][0]) + 1
+    return last_insert_id
 
 def get_item_id() -> int:
-    result = int(get_user_input("Enter a item ID"))
+    result = int(get_user_input("Enter the item ID"))
+    return result
+
+def update_stock( custom_stock: bool = False):
+    product_id = {'id':get_item_id()}
+    if custom_stock:
+        column_value_set = {'stock': 0}
+    else:
+        column_value_set = {'stock': get_user_input('New stock')}
+    data_tuple = [column_value_set, product_id]
+    return data_tuple
+
+def sell_product():
+    id = get_item_id()
+    pcs = int(get_user_input("Enter the number of sold pieces"))
+    result = [id, pcs]
+    return result
+
+def update_description():
+    print('please complete only the fields you wish to change')
+    id = {'product_id': int(get_item_id())}
+    edit_data = {
+        'name': get_user_input('Name', None),
+        'ring': get_user_input('Ring', None),
+        'length_': get_user_input('Length_', None),
+        'origin': get_user_input('Origin', None),
+        'other': get_user_input('Other', None)
+        }
+    new_dict = { key: f"'{value}'" for key, value in edit_data.items() if value is not None}
+    result = [id, new_dict]
     return result
