@@ -39,7 +39,7 @@ def loop():
             name="Get details",
             command=c.ListItemsCommand(
                 table_name = 'items', second_table_name = 'details', first_table_join_column = 'id', second_table_join_column = 'product_id',
-                columns = ['id', 'stock', 'name', 'ring', 'length_', 'origin']),
+                columns = ('id', 'stock', 'name', 'ring', 'length_', 'origin')),
             prep_cal= p.get_item_id
         ),
         '8':p.Option(

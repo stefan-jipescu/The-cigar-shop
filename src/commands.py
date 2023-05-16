@@ -2,8 +2,8 @@ import typing as t
 #from typing import Any
 #from typing_extensions import SupportsIndex
 from src.database import DatabaseManager
-from datetime import datetime
 import sys
+from tabulate import tabulate
 db = DatabaseManager('cigar_db.db')
 
 class Command (t.Protocol):
@@ -61,7 +61,8 @@ class ListItemsCommand:
             ordered_descending = self.ordered_descending
         )
         results = cursor.fetchall()
-        return results
+        final_result = tabulate([self.columns, results[0]], tablefmt="grid")
+        return final_result
 
 class DeleteItemCommand:
     def execute(self, data:int):
