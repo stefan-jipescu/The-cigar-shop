@@ -48,6 +48,11 @@ def loop():
             prep_cal= p.get_item_id
         ),
         '9':p.Option(
+            name="Export",
+            command=c.ExportToExcelCommand(),
+            prep_cal= p.get_file_name
+        ),
+        '10':p.Option(
             name="Quit",
             command=c.QuitCommand()
         )

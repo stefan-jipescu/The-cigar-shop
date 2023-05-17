@@ -110,3 +110,7 @@ def update_description():
     new_dict = { key: f"'{value}'" for key, value in edit_data.items() if value is not None}
     result = [id, new_dict]
     return result
+
+def get_file_name():
+    name = input("Insert the file name")
+    return name

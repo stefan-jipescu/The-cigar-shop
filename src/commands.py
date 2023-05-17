@@ -4,6 +4,9 @@ import typing as t
 from src.database import DatabaseManager
 import sys
 from tabulate import tabulate
+import openpyxl
+from pathlib import Path
+
 db = DatabaseManager('cigar_db.db')
 
 class Command (t.Protocol):
@@ -37,7 +40,7 @@ class AddItemCommand:
 
 class ListItemsCommand:
     def __init__(self, table_name: str, second_table_name: str = None, first_table_join_column: str = None, second_table_join_column: str = None,
-        columns: list = None, criteria : t.Dict[str, str] = {}, order_by: t.Optional[str ] = None, ordered_descending: bool = False
+        columns: list = None, criteria : t.Dict[str, str] = {}
         ):
         self.table_name = table_name
         self.second_table_name = second_table_name
@@ -45,8 +48,6 @@ class ListItemsCommand:
         self.second_table_join_column = second_table_join_column
         self.columns = columns
         self.criteria = criteria
-        self.order_by = order_by
-        self.ordered_descending = ordered_descending
 
     def execute(self, data):
         id_set = {'id': data}
@@ -57,12 +58,11 @@ class ListItemsCommand:
             second_table_join_column = self.second_table_join_column,
             columns = self.columns,
             criteria = id_set,
-            order_by = self.order_by,
-            ordered_descending = self.ordered_descending
         )
         results = cursor.fetchall()
         final_result = tabulate([self.columns, results[0]], tablefmt="grid")
-        return final_result
+        #return final_result
+        return results
 
 class DeleteItemCommand:
     def execute(self, data:int):
@@ -113,6 +113,22 @@ class UpdateDetails():
             )
         
         return 'Product updated'
+
+class ExportToExcelCommand:
+    def execute(self, data:str) -> str:
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        cursor = db.select(
+            table_name = 'items')
+        records = cursor.fetchall()
+
+
+        for row in records:
+            sheet.append(row)
+        export_folder_path = Path(f'./exports')
+        export_folder_path.mkdir(parents = True, exist_ok=True)
+        workbook.save(export_folder_path / f'{data}.xlsx')
+        return 'done'
 
 class QuitCommand:
     def execute(self):
