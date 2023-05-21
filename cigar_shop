@@ -55,6 +55,11 @@ def loop():
         '10':p.Option(
             name="Quit",
             command=c.QuitCommand()
+        ),
+        '11':p.Option(
+            name="Jira ticket",
+            command= c.CreateJiraTicket(),
+            prep_cal= p.get_item_id
         )
     }
     p.clear_screen()
