@@ -26,12 +26,21 @@ class Create_new_table:
                 "date_added": 'text not null'
             }
         )
-
+        db.create_table(
+            table_name = 'details',
+            columns ={
+                "product_id": 'INTEGER',
+                "name": 'TEXT NOT NULL',
+                "ring": 'NUMERIC NOT NULL',
+                "length_": 'INTEGER NOT NULL',
+                "origin": 'TEXT NOT NULL',
+                "other": 'TEXT'
+            },
+            primary_table = 'items',
+            primary_column = 'id'
+        )
 class AddItemCommand:
     def execute(self, data: tuple):
-        #: t.Tuple(t.Dict[str, str], t.Dict[str, str])
-        #date_added = datetime.utcnow().isoformat()
-        #data.setdefault("date_added", date_added)
         first_table_data = data[0]
         second_table_data = data [1]
         db.insert_data(table_name='items', data= first_table_data)

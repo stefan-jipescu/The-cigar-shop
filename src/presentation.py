@@ -71,12 +71,16 @@ def get_new_item_data() -> t.Dict[str,str]:
     return data_list
 
 def get_last_item_inserted() -> int:
-    db = DatabaseManager('cigar_db.db')
-    cursor = db.select(
-        table_name= 'items', 
-        columns=['max(id)'])
-    last_insert_id = ((cursor.fetchall())[0][0]) + 1
-    return last_insert_id
+    while True:
+        try:
+            db = DatabaseManager('cigar_db.db')
+            cursor = db.select(
+                table_name= 'items', 
+                columns=['max(id)'])
+            last_insert_id = ((cursor.fetchall())[0][0]) + 1
+        except BaseException:
+            last_insert_id = 1
+        return last_insert_id
 
 def get_item_id() -> int:
     result = int(get_user_input("Enter the item ID"))
