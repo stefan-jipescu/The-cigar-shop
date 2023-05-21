@@ -112,5 +112,5 @@ def update_description():
     return result
 
 def get_file_name():
-    name = input("Insert the file name")
+    name = input("Insert the file name ")
     return name

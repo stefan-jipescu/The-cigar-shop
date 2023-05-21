@@ -9,57 +9,59 @@ def loop():
             command=c.AddItemCommand(),
             prep_cal= p.get_new_item_data
         ),
+
         "2": p.Option(
             name = "Stock check",
             command = c.CheckStock(),
             prep_cal = p.get_item_id
         ),
+
         "3": p.Option(
             name = "Mark out of stock",
             command = c.UpdateStock(),
             prep_cal = p.update_stock,
             val_prep_cal= True
-        ), 
+        ),
+
         "4": p.Option(
             name = "Update the stock",
             command = c.UpdateStock(),
             prep_cal = p.update_stock,
-        ), 
+        ),
+
         "5": p.Option(
             name= "Sell a product",
             command=c.SellProduct(),
             prep_cal= p.sell_product
         ),
+
         "6": p.Option(
             name= "Update product details",
             command=c.UpdateDetails(),
             prep_cal= p.update_description
         ),
+
         "7":p.Option(
             name="Get details",
-            command=c.ListItemsCommand(
-                table_name = 'items', second_table_name = 'details', first_table_join_column = 'id', second_table_join_column = 'product_id',
-                columns = ('id', 'stock', 'name', 'ring', 'length_', 'origin')),
+            command=c.ListItemsCommand(),
             prep_cal= p.get_item_id
         ),
+
+        '9':p.Option(
+            name="Export details",
+            command=c.ExportToExcelCommand(),
+            prep_cal= p.get_file_name
+        ),
+
         '8':p.Option(
             name="Delete an item",
             command=c.DeleteItemCommand(),
             prep_cal= p.get_item_id
         ),
-        '9':p.Option(
-            name="Export",
-            command=c.ExportToExcelCommand(),
-            prep_cal= p.get_file_name
-        ),
+
         '10':p.Option(
             name="Quit",
             command=c.QuitCommand()
-        ),
-        '11':p.Option(
-            name="Jira ticket",
-            command= c.CreateJiraTicket(),
-            prep_cal= p.get_item_id
         )
     }
     p.clear_screen()

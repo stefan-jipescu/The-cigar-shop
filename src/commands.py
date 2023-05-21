@@ -40,29 +40,20 @@ class AddItemCommand:
     
 
 class ListItemsCommand:
-    def __init__(self, table_name: str, second_table_name: str = None, first_table_join_column: str = None, second_table_join_column: str = None,
-        columns: list = None, criteria : t.Dict[str, str] = {}
-        ):
-        self.table_name = table_name
-        self.second_table_name = second_table_name
-        self.first_table_join_column = first_table_join_column
-        self.second_table_join_column = second_table_join_column
-        self.columns = columns
-        self.criteria = criteria
-
     def execute(self, data):
+        columns = ('id', 'stock', 'name', 'ring', 'length_', 'origin')
         id_set = {'id': data}
         cursor = db.select(
-            table_name = self.table_name,
-            second_table_name = self.second_table_name,
-            first_table_join_column = self.first_table_join_column,
-            second_table_join_column = self.second_table_join_column,
-            columns = self.columns,
+            table_name = 'items',
+            second_table_name = 'details',
+            first_table_join_column = 'id',
+            second_table_join_column = 'product_id',
+            columns = columns,
             criteria = id_set,
         )
         results = cursor.fetchall()
-        final_result = tabulate([self.columns, results[0]], tablefmt="grid")
-        return results
+        final_result = tabulate([columns, results[0]], tablefmt="grid")
+        return final_result
 
 class DeleteItemCommand:
     def execute(self, data:int):
@@ -74,6 +65,8 @@ class UpdateStock:
     def execute(self, data: list):
         id = data[1]
         values_set = data[0]
+        if int([i for i in values_set.values()][0]) == 0:
+            CreateJiraTicket(int([i for i in id.values()][0])).execute()
         db.update(table_name = 'items', column_value = values_set, criteria = id)
         return 'Item updated'
 
@@ -95,12 +88,13 @@ class SellProduct():
         old_stock = int(stock.execute(data = id))
         new_stock = (old_stock - pcs)
         if new_stock < 0:
-            return "The stock is too low for thins sale"
-        else:
-            values_set = {'stock': new_stock}
-            id_dict = {'id' : id}
-            db.update(table_name = 'items', column_value = values_set, criteria = id_dict)
-            return 'Sold'
+            return "The stock is too low for this sale"
+        values_set = {'stock': new_stock}
+        id_dict = {'id' : id}
+        db.update(table_name = 'items', column_value = values_set, criteria = id_dict)
+        if new_stock == 0:
+            CreateJiraTicket(id).execute()
+        return 'Sold'
 
 class UpdateDetails():
     def execute(self, data):
@@ -118,12 +112,17 @@ class ExportToExcelCommand:
     def execute(self, data:str) -> str:
         workbook = openpyxl.Workbook()
         sheet = workbook.active
+        columns = ('id', 'stock', 'name', 'ring', 'length_', 'origin')
         cursor = db.select(
-            table_name = 'items')
-        records = cursor.fetchall()
-
-
-        for row in records:
+            table_name = 'items',
+            second_table_name = 'details',
+            first_table_join_column = 'id',
+            second_table_join_column = 'product_id',
+            columns = columns
+        )
+        results = cursor.fetchall()
+        final_results = [columns] + results
+        for row in final_results:
             sheet.append(row)
         export_folder_path = Path(f'./exports')
         export_folder_path.mkdir(parents = True, exist_ok=True)
