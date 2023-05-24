@@ -1,12 +1,11 @@
 import typing as t
-#from typing import Any
-#from typing_extensions import SupportsIndex
 from src.database import DatabaseManager
 import sys
 from tabulate import tabulate
 import openpyxl
 from pathlib import Path
 from jira import JIRA
+import datetime
 
 db = DatabaseManager('cigar_db.db')
 
@@ -147,6 +146,7 @@ class CreateJiraTicket():
         self.id = id
 
     def execute(self) :
+        time = datetime.datetime.today()
         api_token = 'ATATT3xFfGF0EX_UsCTgkZRokLYqR0dTZr4YxY0DwgZtQ54pzJh9q9SBCy9S-6NNLFNxevzhpt2exvMc8qLwPKM0kX5tE6_96vNq413TEHv88DL355c8UcCx40ehy23FY_F7wkeIt-k-kalRiwHrr6MbCFgUrQP3nMLsvIdZ01IMWTf3mDwO5JU=9E01A8F8'
         jira_connection = JIRA(
             basic_auth=('stefan_jipi@yahoo.com', api_token),
@@ -155,8 +155,8 @@ class CreateJiraTicket():
 
         issue_dict = {
             'project': {'key': 'MYF'},
-            'summary': f'ID {self.id} out of stock',
-            'description': 'Detailed ticket description.',
+            'summary': f'ID {self.id} is out of stock',
+            'description': f'The ID {self.id} is out of stock from {time}',
             'issuetype': {'name': 'Task'},
         }
 

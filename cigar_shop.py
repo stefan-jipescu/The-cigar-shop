@@ -47,13 +47,13 @@ def loop():
             prep_cal= p.get_item_id
         ),
 
-        '9':p.Option(
+        '8':p.Option(
             name="Export details",
             command=c.ExportToExcelCommand(),
             prep_cal= p.get_file_name
         ),
 
-        '8':p.Option(
+        '9':p.Option(
             name="Delete an item",
             command=c.DeleteItemCommand(),
             prep_cal= p.get_item_id
