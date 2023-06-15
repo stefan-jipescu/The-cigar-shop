@@ -19,10 +19,9 @@ class Create_new_table:
             table_name='items',
             columns={
                 'id': 'integer primary key autoincrement',
-                'title': 'text not null',
-                'url': "text not null",
-                'notes': 'text',
-                "date_added": 'text not null'
+                'stock': 'INTEGER not null',
+                'price': 'INTEGER not null',
+                'note': 'text'
             }
         )
         db.create_table(
